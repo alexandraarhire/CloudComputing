@@ -28,12 +28,13 @@ export const getServerSideProps: GetServerSideProps<ConnectionStatus> = async ()
   }
 };
 
-export default function Home({ isConnected }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [registerTitle, setRegisterTitle] = useState(""); 
   const [registerIngredients, setRegisterIngredients] = useState("");
   const [registerInstructions, setRegisterInstructions] = useState(""); 
   const [registerDifficulty, setRegisterDifficulty] = useState(""); 
+  const [filterDifficulty, setFilterDifficulty] = useState(""); // Adăugăm starea pentru filtrul de dificultate
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -95,6 +96,30 @@ export default function Home({ isConnected }: InferGetServerSidePropsType<typeof
     }
   };
 
+  const handleDeleteRecipe = async (id: string) => {
+    try {
+      const response = await fetch(`/api/deleteRecipe?id=${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        const updatedRecipes = recipes.filter(recipe => recipe._id !== id);
+        setRecipes(updatedRecipes);
+        alert("Rețeta a fost ștearsă cu succes!");
+      } else {
+        const data = await response.json();
+        setError(data.message);
+      }
+    } catch (error) {
+      console.error("Eroare la ștergerea rețetei:", error);
+      setError("A apărut o eroare la ștergerea rețetei.");
+    }
+  };
+
+  const handleFilterChange = (e: FormEvent<HTMLSelectElement>) => {
+    setFilterDifficulty(e.currentTarget.value);
+  };
+
   return (
     <div style={{ 
       maxWidth: "1000px", 
@@ -103,53 +128,52 @@ export default function Home({ isConnected }: InferGetServerSidePropsType<typeof
       fontFamily: "Arial, sans-serif",
       backgroundColor: "#f0f0f0",
       borderRadius: "10px",
-      display: "flex",
-      justifyContent: "space-between"
-    }}>
-      <div style={{ width: "45%", padding: "1rem" }}>
-        <h2 style={{ fontSize: "2rem", marginBottom: "1rem" }}>Gestionare Rețete</h2>
-        <form onSubmit={handleRegisterSubmit} style={{ marginTop: "20px" }}>
+      padding: "20px",
+      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+      }}>
+      <h1 style={{ fontSize: "3rem", marginBottom: "1rem", fontFamily: "Georgia, serif" }}>Blog Culinar</h1>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <form onSubmit={handleRegisterSubmit} style={{ width: "100%", maxWidth: "400px", marginBottom: "20px" }}>
           {error && <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
           <div style={{ marginBottom: "1rem" }}>
-            <label htmlFor="registerTitle" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left" ,       fontFamily: "Arial, sans-serif"  }}>Titlu:</label>
+            <label htmlFor="registerTitle" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left" }}>Titlu:</label>
             <input
               type="text"
               id="registerTitle"
               value={registerTitle}
               onChange={(e) => setRegisterTitle(e.target.value)}
-              style={{ width: "100%", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem",       fontFamily: "Arial, sans-serif" }}
+              style={{ width: "100%", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem" }}
             />
           </div>
           <div style={{ marginBottom: "1rem" }}>
-            <label htmlFor="registerIngredients" style={{ display: "block", marginBottom: "0.5rem",  textAlign:"left",       fontFamily: "Arial, sans-serif"}}>Ingrediente:</label>
+            <label htmlFor="registerIngredients" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left" }}>Ingrediente:</label>
             <textarea
               id="registerIngredients"
               value={registerIngredients}
               onChange={(e) => setRegisterIngredients(e.target.value)}
-              style={{ width: "100%", minHeight: "100px", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem",       fontFamily: "Arial, sans-serif" }}
+              style={{ width: "100%", minHeight: "100px", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem" }}
             />
           </div>
           <div style={{ marginBottom: "1rem" }}>
-            <label htmlFor="registerInstructions" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left",       fontFamily: "Arial, sans-serif" }}>Instrucțiuni:</label>
+            <label htmlFor="registerInstructions" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left" }}>Instrucțiuni:</label>
             <textarea
               id="registerInstructions"
               value={registerInstructions}
               onChange={(e) => setRegisterInstructions(e.target.value)}
-              style={{ width: "100%", minHeight: "100px", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem",       fontFamily: "Arial, sans-serif" }}
+              style={{ width: "100%", minHeight: "100px", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem" }}
             />
           </div>
           <div style={{ marginBottom: "1rem" }}>
-            <label htmlFor="registerDifficulty" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left",       fontFamily: "Arial, sans-serif" }}>Dificultate:</label>
+            <label htmlFor="registerDifficulty" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left" }}>Dificultate:</label>
             <select
-              id="registerDifficulty"
               value={registerDifficulty}
               onChange={(e) => setRegisterDifficulty(e.target.value)}
-              style={{ width: "100%", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem",       fontFamily: "Arial, sans-serif" }}
+              style={{ width: "100%", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem" }}
             >
-              <option value="" style={{fontFamily:"Arial, sans-serif"}}>Alegeți dificultatea</option>
-              <option value="Ușor" style={{fontFamily:"Arial, sans-serif"}}>Ușor</option>
-              <option value="Mediu" style={{fontFamily:"Arial, sans-serif"}}>Mediu</option>
-              <option value="Dificil" style={{fontFamily:"Arial, sans-serif"}}>Dificil</option>
+              <option value="">Alegeți dificultatea</option>
+              <option value="Ușor">Ușor</option>
+              <option value="Mediu">Mediu</option>
+              <option value="Dificil">Dificil</option>
             </select>
           </div>
           <button 
@@ -167,21 +191,56 @@ export default function Home({ isConnected }: InferGetServerSidePropsType<typeof
             Creare Rețetă
           </button>
         </form>
-      </div>
-      <div style={{ width: "65%", padding: "1rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-          <h2 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>Rețete</h2>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "1rem" }}>
+          <label htmlFor="filterDifficulty" style={{ marginRight: "10px", textAlign: "right", fontFamily: "Arial, sans-serif" }}>Filtrare după dificultate:</label>
+          <select
+            id="filterDifficulty"
+            value={filterDifficulty}
+            onChange={handleFilterChange}
+            style={{ border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem", fontFamily: "Arial, sans-serif" }}
+          >
+            <option value="">Toate nivelurile</option>
+            <option value="Ușor">Ușor</option>
+            <option value="Mediu">Mediu</option>
+            <option value="Dificil">Dificil</option>
+          </select>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "1rem" }}>
-          {recipes.map((recipe) => (
-            <div key={recipe._id} style={{ border: "1px solid #ccc", padding: "1rem", borderRadius: "0.25rem" }}>
-              <h3 style={{ marginBottom: "0.5rem", fontSize: "1.2rem" }}><strong style={{color: "blue"}}>Titlu:</strong> {recipe.title}</h3>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "1rem", marginBottom: "20px" }}>
+        {recipes
+          .filter(recipe => !filterDifficulty || recipe.difficulty === filterDifficulty) // Aplicăm filtrul de dificultate
+          .map((recipe) => (
+            <div key={recipe._id} style={{ 
+              border: "1px solid #ccc", 
+              padding: "1rem", 
+              borderRadius: "0.25rem",
+              backgroundColor: "#fff",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+              transition: "box-shadow 0.3s ease-in-out",
+              ":hover": {
+                boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.2)",
+              }
+            }}>
+              <h3 style={{ marginBottom: "0.5rem", fontSize: "1.2rem", color: "#007bff" }}><strong>Titlu:</strong> {recipe.title}</h3>
               <p style={{ marginBottom: "0.25rem" }}><strong>Ingrediente:</strong> {recipe.ingredients}</p>
               <p style={{ marginBottom: "0.25rem" }}><strong>Instrucțiuni:</strong> {recipe.instructions}</p>
               <p style={{ marginBottom: "0.25rem" }}><strong>Dificultate:</strong> {recipe.difficulty}</p>
+              <button 
+                onClick={() => handleDeleteRecipe(recipe._id)} 
+                style={{ 
+                  backgroundColor: "red", 
+                  color: "white", 
+                  border: "none", 
+                  borderRadius: "0.25rem", 
+                  padding: "0.25rem 0.5rem", 
+                  cursor: "pointer",
+                  marginTop: "0.5rem"
+                }}
+              >
+                Șterge
+              </button>
             </div>
           ))}
-        </div>
       </div>
     </div>
   );
