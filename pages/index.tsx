@@ -1,25 +1,22 @@
-import Head from "next/head";
+import { useState, FormEvent, useEffect } from "react";
 import clientPromise from "../lib/mongodb";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
+
+type Recipe = {
+  _id: string;
+  title: string;
+  ingredients: string;
+  instructions: string;
+  difficulty: string;
+};
 
 type ConnectionStatus = {
   isConnected: boolean;
 };
 
-export const getServerSideProps: GetServerSideProps<
-  ConnectionStatus
-> = async () => {
+export const getServerSideProps: GetServerSideProps<ConnectionStatus> = async () => {
   try {
     await clientPromise;
-    // `await clientPromise` will use the default database passed in the MONGODB_URI
-    // However you can use another database (e.g. myDatabase) by replacing the `await clientPromise` with the following code:
-    //
-    // `const client = await clientPromise`
-    // `const db = client.db("myDatabase")`
-    //
-    // Then you can execute queries against your database like so:
-    // db.find({}) or any of the MongoDB Node Driver commands
-
     return {
       props: { isConnected: true },
     };
@@ -31,227 +28,161 @@ export const getServerSideProps: GetServerSideProps<
   }
 };
 
-export default function Home({
-  isConnected,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Home({ isConnected }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [registerTitle, setRegisterTitle] = useState(""); 
+  const [registerIngredients, setRegisterIngredients] = useState("");
+  const [registerInstructions, setRegisterInstructions] = useState(""); 
+  const [registerDifficulty, setRegisterDifficulty] = useState(""); 
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function fetchRecipes() {
+      try {
+        const response = await fetch("/api/getRecipes");
+        if (response.ok) {
+          const data = await response.json();
+          setRecipes(data);
+        } else {
+          setError("A apărut o eroare la obținerea rețetelor.");
+        }
+      } catch (error) {
+        console.error("Eroare la obținerea rețetelor:", error);
+        setError("A apărut o eroare la obținerea rețetelor.");
+      }
+    }
+
+    fetchRecipes();
+  }, []);
+
+  const handleRegisterSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!registerTitle || !registerIngredients || !registerInstructions || !registerDifficulty) {
+      setError("Te rog completează toate câmpurile!");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/createRecipe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          title: registerTitle, 
+          ingredients: registerIngredients, 
+          instructions: registerInstructions, 
+          difficulty: registerDifficulty 
+        }),
+      });
+
+      if (response.ok) {
+        setError("");
+        setRegisterTitle("");
+        setRegisterIngredients("");
+        setRegisterInstructions("");
+        setRegisterDifficulty("");
+        alert("Rețeta a fost creată cu succes!");
+        window.location.reload();
+      } else {
+        const data = await response.json();
+        setError(data.message);
+      }
+    } catch (error) {
+      console.error("Eroare la înregistrare:", error);
+      setError("A apărut o eroare la crearea rețetei.");
+    }
+  };
+
   return (
-    <div className="container">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main>
-        <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js with MongoDB!</a>
-        </h1>
-
-        {isConnected ? (
-          <h2 className="subtitle">You are connected to MongoDB</h2>
-        ) : (
-          <h2 className="subtitle">
-            You are NOT connected to MongoDB. Check the <code>README.md</code>{" "}
-            for instructions.
-          </h2>
-        )}
-
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="card"
+    <div style={{ 
+      maxWidth: "1000px", 
+      margin: "0 auto", 
+      textAlign: "center", 
+      fontFamily: "Arial, sans-serif",
+      backgroundColor: "#f0f0f0",
+      borderRadius: "10px",
+      display: "flex",
+      justifyContent: "space-between"
+    }}>
+      <div style={{ width: "45%", padding: "1rem" }}>
+        <h2 style={{ fontSize: "2rem", marginBottom: "1rem" }}>Gestionare Rețete</h2>
+        <form onSubmit={handleRegisterSubmit} style={{ marginTop: "20px" }}>
+          {error && <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
+          <div style={{ marginBottom: "1rem" }}>
+            <label htmlFor="registerTitle" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left" ,       fontFamily: "Arial, sans-serif"  }}>Titlu:</label>
+            <input
+              type="text"
+              id="registerTitle"
+              value={registerTitle}
+              onChange={(e) => setRegisterTitle(e.target.value)}
+              style={{ width: "100%", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem",       fontFamily: "Arial, sans-serif" }}
+            />
+          </div>
+          <div style={{ marginBottom: "1rem" }}>
+            <label htmlFor="registerIngredients" style={{ display: "block", marginBottom: "0.5rem",  textAlign:"left",       fontFamily: "Arial, sans-serif"}}>Ingrediente:</label>
+            <textarea
+              id="registerIngredients"
+              value={registerIngredients}
+              onChange={(e) => setRegisterIngredients(e.target.value)}
+              style={{ width: "100%", minHeight: "100px", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem",       fontFamily: "Arial, sans-serif" }}
+            />
+          </div>
+          <div style={{ marginBottom: "1rem" }}>
+            <label htmlFor="registerInstructions" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left",       fontFamily: "Arial, sans-serif" }}>Instrucțiuni:</label>
+            <textarea
+              id="registerInstructions"
+              value={registerInstructions}
+              onChange={(e) => setRegisterInstructions(e.target.value)}
+              style={{ width: "100%", minHeight: "100px", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem",       fontFamily: "Arial, sans-serif" }}
+            />
+          </div>
+          <div style={{ marginBottom: "1rem" }}>
+            <label htmlFor="registerDifficulty" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left",       fontFamily: "Arial, sans-serif" }}>Dificultate:</label>
+            <select
+              id="registerDifficulty"
+              value={registerDifficulty}
+              onChange={(e) => setRegisterDifficulty(e.target.value)}
+              style={{ width: "100%", border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem",       fontFamily: "Arial, sans-serif" }}
+            >
+              <option value="" style={{fontFamily:"Arial, sans-serif"}}>Alegeți dificultatea</option>
+              <option value="Ușor" style={{fontFamily:"Arial, sans-serif"}}>Ușor</option>
+              <option value="Mediu" style={{fontFamily:"Arial, sans-serif"}}>Mediu</option>
+              <option value="Dificil" style={{fontFamily:"Arial, sans-serif"}}>Dificil</option>
+            </select>
+          </div>
+          <button 
+            type="submit" 
+            style={{ 
+              marginTop: "10px", 
+              backgroundColor: "#007bff", 
+              color: "white", 
+              border: "none", 
+              borderRadius: "0.25rem", 
+              padding: "0.5rem 1rem", 
+              cursor: "pointer" 
+            }}
           >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+            Creare Rețetă
+          </button>
+        </form>
+      </div>
+      <div style={{ width: "65%", padding: "1rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+          <h2 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>Rețete</h2>
         </div>
-      </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
-        </a>
-      </footer>
-
-      <style jsx>{`
-        .container {
-          min-height: 100vh;
-          padding: 0 0.5rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
-        main {
-          padding: 5rem 0;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
-        footer {
-          width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        footer img {
-          margin-left: 0.5rem;
-        }
-
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        a {
-          color: inherit;
-          text-decoration: none;
-        }
-
-        .title a {
-          color: #0070f3;
-          text-decoration: none;
-        }
-
-        .title a:hover,
-        .title a:focus,
-        .title a:active {
-          text-decoration: underline;
-        }
-
-        .title {
-          margin: 0;
-          line-height: 1.15;
-          font-size: 4rem;
-        }
-
-        .title,
-        .description {
-          text-align: center;
-        }
-
-        .subtitle {
-          font-size: 2rem;
-        }
-
-        .description {
-          line-height: 1.5;
-          font-size: 1.5rem;
-        }
-
-        code {
-          background: #fafafa;
-          border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-            DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-        }
-
-        .grid {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
-
-          max-width: 800px;
-          margin-top: 3rem;
-        }
-
-        .card {
-          margin: 1rem;
-          flex-basis: 45%;
-          padding: 1.5rem;
-          text-align: left;
-          color: inherit;
-          text-decoration: none;
-          border: 1px solid #eaeaea;
-          border-radius: 10px;
-          transition: color 0.15s ease, border-color 0.15s ease;
-        }
-
-        .card:hover,
-        .card:focus,
-        .card:active {
-          color: #0070f3;
-          border-color: #0070f3;
-        }
-
-        .card h3 {
-          margin: 0 0 1rem 0;
-          font-size: 1.5rem;
-        }
-
-        .card p {
-          margin: 0;
-          font-size: 1.25rem;
-          line-height: 1.5;
-        }
-
-        .logo {
-          height: 1em;
-        }
-
-        @media (max-width: 600px) {
-          .grid {
-            width: 100%;
-            flex-direction: column;
-          }
-        }
-      `}</style>
-
-      <style jsx global>{`
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
-        }
-
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "1rem" }}>
+          {recipes.map((recipe) => (
+            <div key={recipe._id} style={{ border: "1px solid #ccc", padding: "1rem", borderRadius: "0.25rem" }}>
+              <h3 style={{ marginBottom: "0.5rem", fontSize: "1.2rem" }}><strong style={{color: "blue"}}>Titlu:</strong> {recipe.title}</h3>
+              <p style={{ marginBottom: "0.25rem" }}><strong>Ingrediente:</strong> {recipe.ingredients}</p>
+              <p style={{ marginBottom: "0.25rem" }}><strong>Instrucțiuni:</strong> {recipe.instructions}</p>
+              <p style={{ marginBottom: "0.25rem" }}><strong>Dificultate:</strong> {recipe.difficulty}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
