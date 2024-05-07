@@ -130,13 +130,13 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
       borderRadius: "10px",
       padding: "20px",
       boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-      }}>
-      <h1 style={{ fontSize: "3rem", marginBottom: "1rem", fontFamily: "Georgia, serif" }}>Blog Culinar</h1>
+    }}>
+      <h1 style={{ fontSize: "3rem", marginBottom: "1rem", fontFamily: "Georgia, serif", color: "#333" }}>Blog Culinar</h1>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <form onSubmit={handleRegisterSubmit} style={{ width: "100%", maxWidth: "400px", marginBottom: "20px" }}>
           {error && <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
           <div style={{ marginBottom: "1rem" }}>
-            <label htmlFor="registerTitle" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left" }}>Titlu:</label>
+            <label htmlFor="registerTitle" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left", color: "#333" }}>Titlu:</label>
             <input
               type="text"
               id="registerTitle"
@@ -146,7 +146,7 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
             />
           </div>
           <div style={{ marginBottom: "1rem" }}>
-            <label htmlFor="registerIngredients" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left" }}>Ingrediente:</label>
+            <label htmlFor="registerIngredients" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left", color: "#333" }}>Ingrediente:</label>
             <textarea
               id="registerIngredients"
               value={registerIngredients}
@@ -155,7 +155,7 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
             />
           </div>
           <div style={{ marginBottom: "1rem" }}>
-            <label htmlFor="registerInstructions" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left" }}>Instrucțiuni:</label>
+            <label htmlFor="registerInstructions" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left", color: "#333" }}>Instrucțiuni:</label>
             <textarea
               id="registerInstructions"
               value={registerInstructions}
@@ -164,7 +164,7 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
             />
           </div>
           <div style={{ marginBottom: "1rem" }}>
-            <label htmlFor="registerDifficulty" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left" }}>Dificultate:</label>
+            <label htmlFor="registerDifficulty" style={{ display: "block", marginBottom: "0.5rem", textAlign:"left", color: "#333" }}>Dificultate:</label>
             <select
               value={registerDifficulty}
               onChange={(e) => setRegisterDifficulty(e.target.value)}
@@ -192,7 +192,7 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
           </button>
         </form>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "1rem" }}>
-          <label htmlFor="filterDifficulty" style={{ marginRight: "10px", textAlign: "right", fontFamily: "Arial, sans-serif" }}>Filtrare după dificultate:</label>
+          <label htmlFor="filterDifficulty" style={{ marginRight: "10px", textAlign: "right", fontFamily: "Arial, sans-serif", color: "#333" }}>Filtrare după dificultate:</label>
           <select
             id="filterDifficulty"
             value={filterDifficulty}
