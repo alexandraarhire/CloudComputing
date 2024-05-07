@@ -1,4 +1,5 @@
-import { useState, FormEvent, useEffect } from "react";
+// CSS styles
+import React, { useState, FormEvent, useEffect } from "react";
 import clientPromise from "../lib/mongodb";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 
@@ -34,8 +35,9 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
   const [registerIngredients, setRegisterIngredients] = useState("");
   const [registerInstructions, setRegisterInstructions] = useState(""); 
   const [registerDifficulty, setRegisterDifficulty] = useState(""); 
-  const [filterDifficulty, setFilterDifficulty] = useState(""); // Adăugăm starea pentru filtrul de dificultate
+  const [filterDifficulty, setFilterDifficulty] = useState(""); 
   const [error, setError] = useState("");
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchRecipes() {
@@ -210,17 +212,12 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
         {recipes
           .filter(recipe => !filterDifficulty || recipe.difficulty === filterDifficulty) // Aplicăm filtrul de dificultate
           .map((recipe) => (
-            <div key={recipe._id} style={{ 
-              border: "1px solid #ccc", 
-              padding: "1rem", 
-              borderRadius: "0.25rem",
-              backgroundColor: "#fff",
-              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-              transition: "box-shadow 0.3s ease-in-out",
-              ":hover": {
-                boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.2)",
-              }
-            }}>
+            <div 
+              key={recipe._id} 
+              className={hoveredId === recipe._id ? "recipe-container hovered" : "recipe-container"} // Apply hover class based on state
+              onMouseEnter={() => setHoveredId(recipe._id)}
+              onMouseLeave={() => setHoveredId(null)}
+            >
               <h3 style={{ marginBottom: "0.5rem", fontSize: "1.2rem", color: "#007bff" }}><strong>Titlu:</strong> {recipe.title}</h3>
               <p style={{ marginBottom: "0.25rem" }}><strong>Ingrediente:</strong> {recipe.ingredients}</p>
               <p style={{ marginBottom: "0.25rem" }}><strong>Instrucțiuni:</strong> {recipe.instructions}</p>
