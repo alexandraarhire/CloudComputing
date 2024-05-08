@@ -99,11 +99,12 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
   };
 
   const handleDeleteRecipe = async (id: string) => {
+    console.log("Tipul de date al ID-ului înainte de ștergere:", typeof id); 
     try {
       const response = await fetch(`/api/deleteRecipe?id=${id}`, {
         method: "DELETE",
       });
-
+  
       if (response.ok) {
         const updatedRecipes = recipes.filter(recipe => recipe._id !== id);
         setRecipes(updatedRecipes);
@@ -117,6 +118,7 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
       setError("A apărut o eroare la ștergerea rețetei.");
     }
   };
+  
 
   const handleFilterChange = (e: FormEvent<HTMLSelectElement>) => {
     setFilterDifficulty(e.currentTarget.value);
@@ -224,11 +226,11 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "1rem", marginBottom: "20px" }}>
         {recipes
-          .filter(recipe => !filterDifficulty || recipe.difficulty === filterDifficulty) // Aplicăm filtrul de dificultate
+          .filter(recipe => !filterDifficulty || recipe.difficulty === filterDifficulty) 
           .map((recipe) => (
             <div 
               key={recipe._id} 
-              className={hoveredId === recipe._id ? "recipe-container hovered" : "recipe-container"} // Apply hover class based on state
+              className={hoveredId === recipe._id ? "recipe-container hovered" : "recipe-container"} 
               onMouseEnter={() => setHoveredId(recipe._id)}
               onMouseLeave={() => setHoveredId(null)}
             >
@@ -239,7 +241,7 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
               <button 
   onClick={() => handleDeleteRecipe(recipe._id)} 
   style={{ 
-    backgroundColor: "#ff0000", // Roșu
+    backgroundColor: "#ff0000", 
     color: "white", 
     border: "none", 
     borderRadius: "0.25rem", 
