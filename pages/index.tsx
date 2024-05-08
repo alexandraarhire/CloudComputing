@@ -1,4 +1,4 @@
-// CSS styles
+
 import React, { useState, FormEvent, useEffect } from "react";
 import clientPromise from "../lib/mongodb";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
@@ -133,7 +133,15 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
       padding: "20px",
       boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
     }}>
-      <h1 style={{ fontSize: "3rem", marginBottom: "1rem", fontFamily: "Georgia, serif", color: "#333" }}>Blog Culinar</h1>
+      <h1 style={{ 
+  fontSize: "3rem", 
+  marginBottom: "1rem", 
+  fontFamily: "Georgia, serif", 
+  color: "#333",
+  background: "linear-gradient(to right, #ffcc00, #33cc33)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+}}>Blog Culinar</h1>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <form onSubmit={handleRegisterSubmit} style={{ width: "100%", maxWidth: "400px", marginBottom: "20px" }}>
           {error && <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
@@ -179,33 +187,39 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
             </select>
           </div>
           <button 
-            type="submit" 
-            style={{ 
-              marginTop: "10px", 
-              backgroundColor: "#007bff", 
-              color: "white", 
-              border: "none", 
-              borderRadius: "0.25rem", 
-              padding: "0.5rem 1rem", 
-              cursor: "pointer" 
-            }}
-          >
-            Creare Rețetă
-          </button>
+  type="submit" 
+  style={{ 
+    marginTop: "10px", 
+    backgroundColor: "#33cc33",
+    color: "white", 
+    border: "none", 
+    borderRadius: "0.25rem", 
+    padding: "0.5rem 1rem", 
+    cursor: "pointer" 
+  }}
+>
+  Creare Rețetă
+</button>
         </form>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "1rem" }}>
           <label htmlFor="filterDifficulty" style={{ marginRight: "10px", textAlign: "right", fontFamily: "Arial, sans-serif", color: "#333" }}>Filtrare după dificultate:</label>
           <select
-            id="filterDifficulty"
-            value={filterDifficulty}
-            onChange={handleFilterChange}
-            style={{ border: "1px solid #ced4da", borderRadius: "0.25rem", padding: "0.5rem", fontFamily: "Arial, sans-serif" }}
-          >
-            <option value="">Toate nivelurile</option>
-            <option value="Ușor">Ușor</option>
-            <option value="Mediu">Mediu</option>
-            <option value="Dificil">Dificil</option>
-          </select>
+  id="filterDifficulty"
+  value={filterDifficulty}
+  onChange={handleFilterChange}
+  style={{ 
+    border: "1px solid #ced4da", 
+    borderRadius: "0.25rem", 
+    padding: "0.5rem", 
+    fontFamily: "Arial, sans-serif",
+  }}
+>
+  <option value="" style={{ color: "black" }}>Toate nivelurile</option>
+  <option value="Ușor" style={{ color: "#33cc33" }}>Ușor</option> {/* Verde */}
+  <option value="Mediu" style={{ color: "#ffcc00" }}>Mediu</option> {/* Galben */}
+  <option value="Dificil" style={{ color: "#007bff" }}>Dificil</option> {/* Albastru */}
+</select>
+
         </div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "1rem", marginBottom: "20px" }}>
@@ -218,24 +232,24 @@ export default function BlogCulinar({ isConnected }: InferGetServerSidePropsType
               onMouseEnter={() => setHoveredId(recipe._id)}
               onMouseLeave={() => setHoveredId(null)}
             >
-              <h3 style={{ marginBottom: "0.5rem", fontSize: "1.2rem", color: "#007bff" }}><strong>Titlu:</strong> {recipe.title}</h3>
+              <h3 style={{ marginBottom: "0.5rem", fontSize: "1.2rem", color: "#33cc33" }}><strong>Titlu:</strong> {recipe.title}</h3>
               <p style={{ marginBottom: "0.25rem" }}><strong>Ingrediente:</strong> {recipe.ingredients}</p>
               <p style={{ marginBottom: "0.25rem" }}><strong>Instrucțiuni:</strong> {recipe.instructions}</p>
               <p style={{ marginBottom: "0.25rem" }}><strong>Dificultate:</strong> {recipe.difficulty}</p>
               <button 
-                onClick={() => handleDeleteRecipe(recipe._id)} 
-                style={{ 
-                  backgroundColor: "red", 
-                  color: "white", 
-                  border: "none", 
-                  borderRadius: "0.25rem", 
-                  padding: "0.25rem 0.5rem", 
-                  cursor: "pointer",
-                  marginTop: "0.5rem"
-                }}
-              >
-                Șterge
-              </button>
+  onClick={() => handleDeleteRecipe(recipe._id)} 
+  style={{ 
+    backgroundColor: "#ff0000", // Roșu
+    color: "white", 
+    border: "none", 
+    borderRadius: "0.25rem", 
+    padding: "0.25rem 0.5rem", 
+    cursor: "pointer",
+    marginTop: "0.5rem"
+  }}
+>
+  Șterge
+</button>
             </div>
           ))}
       </div>
