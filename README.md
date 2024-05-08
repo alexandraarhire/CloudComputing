@@ -1,6 +1,9 @@
 Link video 
+
 Link aplicație https://cloudcomputing-seven.vercel.app/
+
 Link GitHub https://github.com/alexandraarhire/cloudcomputing
+
 
 1.	Introducere
 Blogul Culinar este o aplicație web care permite utilizatorilor să își creeze și să își gestioneze rețete culinare.
@@ -24,6 +27,7 @@ Interfața este hostată cu ajutorul Vercel.
 
 4.	Flux de date
 Exemple de request / response:
+
 ![image](https://github.com/alexandraarhire/cloudcomputing/assets/107870741/c1c96796-61ce-4b08-a685-b39edb672b70)
 
 ![image](https://github.com/alexandraarhire/cloudcomputing/assets/107870741/0806fef0-1600-46ef-804f-c00eb6f7e560)
