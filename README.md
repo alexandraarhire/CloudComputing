@@ -33,13 +33,21 @@ Exemple de request / response:
 ![image](https://github.com/alexandraarhire/cloudcomputing/assets/107870741/0806fef0-1600-46ef-804f-c00eb6f7e560)
 
 Rute API disponibile:
+
 /api/getRecipes: Returnează lista completă de rețete.
+
 /api/createRecipe: Adaugă o rețetă nouă în baza de date.
+
 /api/deleteRecipe: Șterge o rețetă existentă din baza de date.
+
 Metode HTTP:
+
 GET: Pentru a obține lista de rețete sau o rețetă specifică.
+
 POST: Pentru a adăuga o rețetă nouă.
+
 DELETE: Pentru a șterge o rețetă existentă.
+
 
 5.	Capturi de ecran ale aplicației
 ![image](https://github.com/alexandraarhire/cloudcomputing/assets/107870741/fd69c498-3b67-496f-82bd-fa4540245c05)
@@ -49,17 +57,17 @@ DELETE: Pentru a șterge o rețetă existentă.
 ![image](https://github.com/alexandraarhire/cloudcomputing/assets/107870741/f2b6947f-127d-48fd-a078-bfecb6744191)
 
 6. Referinte
+7. 
 https://online.ase.ro/course/view.php?id=40607
+
 https://youtu.be/JIlYroSsInU?si=1jSDrZN9YheiQ9kN
 
 
- 
 
  
 
  
 
-6.	Referințe
-https://online.ase.ro/course/view.php?id=40607
-https://youtu.be/JIlYroSsInU?si=1jSDrZN9YheiQ9kN
+ 
+
 
