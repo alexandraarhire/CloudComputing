@@ -6,17 +6,26 @@ Link GitHub https://github.com/alexandraarhire/cloudcomputing
 
 
 1.	Introducere
+
 Blogul Culinar este o aplicație web care permite utilizatorilor să își creeze și să își gestioneze rețete culinare.
+
 Această aplicație îi ajută pe utilizatori să adauge rețete noi, să vizualizeze și să șteargă rețetele existente.
+
 Utilizatorii pot căuta rețete după dificultate și pot interacționa cu rețetele prin intermediul unei interfețe intuitive și prietenoase.
 
+
 2.	Descriere problemă
+
 Blogul Culinar a fost creat pentru a rezolva nevoia de a avea un loc centralizat unde utilizatorii să își poată organiza și împărtăși rețetele preferate.
-Uneori, utilizatorii găsesc rețete online sau le inventează pe ale lor, dar le este greu să le gestioneze eficient. Blogul Culinar vine în ajutorul lor, oferindu-le posibilitatea de a salva
-și organiza rețetele într-un singur loc.
+
+Uneori, utilizatorii găsesc rețete online sau le inventează pe ale lor, dar le este greu să le gestioneze eficient. Blogul Culinar vine în ajutorul lor, oferindu-le posibilitatea de a salva și organiza rețetele într-un singur loc.
+
 
 3.	Descriere API
+
+   
 Blogul Culinar utilizează un API simplu pentru a interacționa cu baza de date și a gestiona operațiunile CRUD pentru rețetele culinare.
+
 
 Am folosit MongoDB pentru a stoca rețetele introduse prin intermediul interfeței. 
  ![image](https://github.com/alexandraarhire/cloudcomputing/assets/107870741/201838ec-6fb5-4308-850d-ca49db631672)
@@ -26,7 +35,9 @@ Interfața este hostată cu ajutorul Vercel.
  ![image](https://github.com/alexandraarhire/cloudcomputing/assets/107870741/eb3ce1e5-1c03-48db-bf96-d163552fc3da)
 
 4.	Flux de date
+
 Exemple de request / response:
+
 
 ![image](https://github.com/alexandraarhire/cloudcomputing/assets/107870741/c1c96796-61ce-4b08-a685-b39edb672b70)
 
@@ -57,7 +68,7 @@ DELETE: Pentru a șterge o rețetă existentă.
 ![image](https://github.com/alexandraarhire/cloudcomputing/assets/107870741/f2b6947f-127d-48fd-a078-bfecb6744191)
 
 6. Referinte
-7. 
+
 https://online.ase.ro/course/view.php?id=40607
 
 https://youtu.be/JIlYroSsInU?si=1jSDrZN9YheiQ9kN
