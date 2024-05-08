@@ -1,4 +1,4 @@
-Link video 
+Link video https://youtu.be/bGVwQeZAioU
 
 Link aplicație https://cloudcomputing-seven.vercel.app/
 
